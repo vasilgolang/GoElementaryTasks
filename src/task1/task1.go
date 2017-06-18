@@ -14,6 +14,6 @@ func ChessBoard(width, height int, symbol rune) (board string) {
 		}
 		board += "\r\n"
 	}
-	
+
 	return
 }

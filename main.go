@@ -32,7 +32,11 @@ func main() {
 		{"KLM", 1, 2, 2.236},
 		{"OPQ", 3, 3, 3},
 	}
-	fmt.Println(task3.SortTriangles(triangles))
+	if task3.ValidateTriangles(triangles) {
+		fmt.Println(task3.SortTriangles(triangles))
+	} else {
+		fmt.Fprintln(os.Stderr, "One or more of triangles is not valid")
+	}
 
 	fmt.Println("\r\n4) Palindrome")
 	fmt.Println(task4.FindPalindrome(9123456789))
@@ -53,7 +57,7 @@ func main() {
 	fmt.Println("\r\n7) Fibonacci")
 	restriction, err := task7.ParseContext(`context1.txt`)
 	if err != nil {
-		fmt.Fprintln(os.Stderr,    err)
+		fmt.Fprintln(os.Stderr, err)
 	}
 	fmt.Println(task7.Fib(restriction))
 	fmt.Println()

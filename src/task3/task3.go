@@ -13,6 +13,10 @@ type Triangle struct {
 	C        float64
 }
 
+func (t Triangle) Validate() bool {
+	return t.A > 0 && t.B > 0 && t.C > 0 && (t.A < t.B+t.C) && (t.B < t.A+t.C) && (t.C < t.A+t.B)
+}
+
 type SquareAndVerticales struct {
 	Triangle *Triangle
 	Square   float64
@@ -29,6 +33,15 @@ func (s Squares) Less(i, j int) bool {
 func (t *Triangle) Square() float64 {
 	p := (t.A + t.B + t.C) / 2
 	return math.Sqrt(p * (p - t.A) * (p - t.B) * (p - t.C))
+}
+
+func ValidateTriangles(triangles []Triangle) bool {
+	for _, t := range triangles {
+		if !t.Validate() {
+			return false
+		}
+	}
+	return true
 }
 
 func SortTriangles(triangles []Triangle) (names []string) {
