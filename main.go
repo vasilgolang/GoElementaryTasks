@@ -12,13 +12,17 @@ import (
 	"os"
 	"io/ioutil"
 	"encoding/json"
+	"encoding/xml"
 	"log"
+	"path/filepath"
+	"strings"
 )
 
 type Params1 struct {
-	Width  int `json:"width"`
-	Height int `json:"height"`
-	Symbol string  `json:"symbol"`
+	XMLName xml.Name  `xml:"task1params"`
+	Width   int `json:"width" xml:"width"`
+	Height  int `json:"height" xml:"height"`
+	Symbol  string  `json:"symbol" xml:"symbol"`
 }
 
 type Params2 struct {
@@ -49,13 +53,14 @@ type Params7 struct {
 }
 
 type Params struct {
-	Params1 []Params1 `json:"task1params"`
-	Params2 []Params2 `json:"task2params"`
-	Params3 []Params3 `json:"task3params"`
-	Params4 []Params4 `json:"task4params"`
-	Params5 []Params5 `json:"task5params"`
-	Params6 []Params6 `json:"task6params"`
-	Params7 []Params7 `json:"task7params"`
+	XMLName xml.Name  `xml:"root"`
+	Params1 []Params1 `json:"task1params" xml:"task1params"`
+	Params2 []Params2 `json:"task2params" xml:"task2params"`
+	Params3 []Params3 `json:"task3params" xml:"task3params"`
+	Params4 []Params4 `json:"task4params" xml:"task4params"`
+	Params5 []Params5 `json:"task5params" xml:"task5params"`
+	Params6 []Params6 `json:"task6params" xml:"task6params"`
+	Params7 []Params7 `json:"task7params" xml:"task7params"`
 }
 
 func main() {
@@ -65,17 +70,31 @@ func main() {
 		return
 	}
 
-	fmt.Println("FILE:", os.Args[1])
+	fileName := os.Args[1]
+	extension := strings.ToLower(filepath.Ext(fileName))
 
-	content, err := ioutil.ReadFile(os.Args[1])
+	fmt.Println("FILE:", fileName)
+
+	content, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		log.Fatal("Fatal error: ", err)
 	}
 
 	var params Params
-	err = json.Unmarshal(content, &params)
-	if err != nil {
-		log.Fatal("JSON error: ", err)
+	switch extension {
+	case ".json":
+		err = json.Unmarshal(content, &params)
+		if err != nil {
+			log.Fatal("JSON error: ", err)
+		}
+	case ".xml":
+		err = xml.Unmarshal(content, &params)
+		if err != nil {
+			log.Fatal("XML error: ", err)
+		}
+	default:
+		fmt.Println("Unknown file extension")
+		return
 	}
 
 	fmt.Printf("%#v\r\n", params)
