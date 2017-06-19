@@ -10,62 +10,123 @@ import (
 	"./src/task6"
 	"./src/task7"
 	"os"
+	"io/ioutil"
+	"encoding/json"
+	"log"
 )
 
+type Params1 struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+	Symbol string  `json:"symbol"`
+}
+
+type Params2 struct {
+	Envelope1 task2.Envelope `json:"envelope1"`
+	Envelope2 task2.Envelope `json:"envelope2"`
+}
+
+type Params3 struct {
+	Triangles []task3.Triangle `json:"triangles"`
+}
+
+type Params4 struct {
+	Number int `json:"number"`
+}
+
+type Params5 struct {
+	Min int `json:"min"`
+	Max int `json:"max"`
+}
+
+type Params6 struct {
+	Length int `json:"length"`
+	Square int `json:"square"`
+}
+
+type Params7 struct {
+	Context string `json:"context"` // context file name
+}
+
+type Params struct {
+	Params1 []Params1 `json:"task1params"`
+	Params2 []Params2 `json:"task2params"`
+	Params3 []Params3 `json:"task3params"`
+	Params4 []Params4 `json:"task4params"`
+	Params5 []Params5 `json:"task5params"`
+	Params6 []Params6 `json:"task6params"`
+	Params7 []Params7 `json:"task7params"`
+}
+
 func main() {
-	fmt.Println("\r\n1) Chess board")
-	fmt.Println(task1.ChessBoard(0, 0, '*'))
-	fmt.Println(task1.ChessBoard(-1, 0, '*'))
-	fmt.Println(task1.ChessBoard(2, 2, '*'))
-	fmt.Println(task1.ChessBoard(3, 2, '*'))
-	fmt.Println(task1.ChessBoard(10, 10, 'X'))
 
-	fmt.Println("\r\n2) Envelopes")
-	e1 := task2.Envelope{3, 5}
-	e2 := task2.Envelope{3.1, 5.1}
-	fmt.Println(task2.CanEncloseEnvelopes(e1, e2))
-
-	fmt.Println("\r\n3) Triangles")
-	var triangles = []task3.Triangle{
-		{"ABC", 10, 20, 22.36},
-		{"DEF", 100, 200, 223.6},
-		{"KLM", 1, 2, 2.236},
-		{"OPQ", 3, 3, 3},
-	}
-	if task3.ValidateTriangles(triangles) {
-		fmt.Println(task3.SortTriangles(triangles))
-	} else {
-		fmt.Fprintln(os.Stderr, "One or more of triangles is not valid")
+	if len(os.Args) < 2 {
+		fmt.Println("Runs tasks\r\n", os.Args[0], "filename\r\n  filename - must contain JSON format")
+		return
 	}
 
-	fmt.Println("\r\n4) Palindrome")
-	fmt.Println(task4.FindPalindrome(9123456789))
-	fmt.Println(task4.FindPalindrome(12234444437))
-	fmt.Println(task4.FindPalindrome(12388321))
-	fmt.Println(task4.FindPalindrome(2505))
-	fmt.Println(task4.FindPalindrome(12834432))
-	fmt.Println(task4.FindPalindrome(55))
-	fmt.Println(task4.FindPalindrome(505))
+	fmt.Println("FILE:", os.Args[1])
 
-	fmt.Println("\r\n5) Success Tickets")
-	fmt.Println(task5.BestCountingSuccessTickets(1, 999999))
-
-	fmt.Println("\r\n6) Number sequence")
-	fmt.Println(task6.WriteNumbers(10, 1000))
-	fmt.Println(task6.WriteNumbers(10, -1000))
-
-	fmt.Println("\r\n7) Fibonacci")
-	restriction, err := task7.ParseContext(`context1.txt`)
+	content, err := ioutil.ReadFile(os.Args[1])
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		log.Fatal("Fatal error: ", err)
 	}
-	fmt.Println(task7.Fib(restriction))
-	fmt.Println()
 
-	restriction, err = task7.ParseContext(`context2.txt`)
+	var params Params
+	err = json.Unmarshal(content, &params)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		log.Fatal("JSON error: ", err)
 	}
-	fmt.Println(task7.Fib(restriction))
+
+	fmt.Printf("%#v\r\n", params)
+
+	for _, p := range params.Params1 {
+		fmt.Printf("\r\nTrying to execute task1 with params: %#v\r\n", p)
+		fmt.Println(task1.ChessBoard(p.Width, p.Height, p.Symbol))
+	}
+
+	for _, p := range params.Params2 {
+		fmt.Printf("\r\nTrying to execute task2 with params: %#v\r\n", p)
+		fmt.Println(task2.CanEncloseEnvelopes(p.Envelope1, p.Envelope2))
+	}
+
+	for _, p := range params.Params3 {
+		fmt.Printf("\r\nTrying to execute task3 with params: %#v\r\n", p)
+		if task3.ValidateTriangles(p.Triangles) {
+			fmt.Println("Triangles from max to min square:", task3.SortTriangles(p.Triangles))
+		} else {
+			fmt.Fprintln(os.Stderr, "One or more of triangles is not valid")
+		}
+	}
+
+	for _, p := range params.Params4 {
+		fmt.Printf("\r\nTrying to execute task4 with params: %#v\r\n", p)
+		fmt.Println(task4.FindMaxPalindrome(p.Number))
+	}
+
+	for _, p := range params.Params5 {
+		fmt.Printf("\r\nTrying to execute task5 with params: %#v\r\n", p)
+		fmt.Println(task5.BestCountingSuccessTickets(p.Min, p.Max))
+	}
+
+	for _, p := range params.Params6 {
+		fmt.Printf("\r\nTrying to execute task6 with params: %#v\r\n", p)
+		if err = task6.WriteNumbers(p.Length, p.Square); err != nil {
+			fmt.Println("Error:", err)
+			continue
+		}
+		fmt.Println("All is OK. Please see results in numbers.txt")
+	}
+
+	for _, p := range params.Params7 {
+		fmt.Printf("\r\nTrying to execute task7 with params: %#v\r\n", p)
+		restriction, err := task7.ParseContext(p.Context)
+		if err != nil {
+			fmt.Println("Error:", err)
+			continue
+		}
+		fmt.Println(task7.Fib(restriction))
+
+	}
 
 }

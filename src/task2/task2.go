@@ -3,8 +3,8 @@ package task2
 import "math"
 
 type Envelope struct {
-	Width  float64
-	Height float64
+	Width  float64 `json:"width"`
+	Height float64 `json:"height"`
 }
 
 func (e *Envelope) Validate() bool {

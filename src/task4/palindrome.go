@@ -43,7 +43,7 @@ func sliceInt2Int(nums []int) (num int) {
 	return
 }
 
-func FindPalindrome(num int) (palindrome int, success bool) {
+func FindMaxPalindrome(num int) (palindrome int, success bool) {
 	if num < 10 {
 		return
 	}
