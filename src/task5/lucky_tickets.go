@@ -1,7 +1,6 @@
 package task5
 
-
- /*
+/*
 Есть 2 способа подсчёта счастливых билетов:
 1. Простой — если на билете напечатано
 шестизначное число, и сумма первых трёх цифр
@@ -17,6 +16,11 @@ package task5
 количестве счастливых билетов для каждого способа подсчёта.
 */
 
+type Params struct {
+	Min int `json:"min"`
+	Max int `json:"max"`
+}
+
 type Result struct {
 	Method int
 	Count  int
@@ -27,7 +31,16 @@ func firstMethod(d []int) bool {
 }
 
 func secondMethod(d []int) bool {
-	return d[0]+d[2]+d[4] == d[1]+d[3]+d[5]
+	//return d[0]+d[2]+d[4] == d[1]+d[3]+d[5] // wrong understood task
+	sumOdd, sumEven := 0, 0
+	for _, v := range d {
+		if (v % 2) == 0 {
+			sumEven += v
+		} else {
+			sumOdd += v
+		}
+	}
+	return sumOdd == sumEven
 }
 
 func BestCountingSuccessTickets(min, max int) (r Result) {
@@ -57,7 +70,7 @@ func BestCountingSuccessTickets(min, max int) (r Result) {
 		}
 	}
 
-	// todo: to do something when both counter are equal
+	// todo: to do something when both counters are equal
 	if firstMethodCounter > secondMethodCounter {
 		return Result{
 			Method: 1,
