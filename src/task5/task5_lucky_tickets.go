@@ -1,5 +1,10 @@
 package task5
 
+import (
+	"fmt"
+	"errors"
+)
+
 /*
 Есть 2 способа подсчёта счастливых билетов:
 1. Простой — если на билете напечатано
@@ -26,6 +31,33 @@ type Result struct {
 	Count  int
 }
 
+// Returns error when params can't pass validation
+func Validate(params Params) (err error) {
+	if params.Min > params.Max {
+		return errors.New(fmt.Sprintf("Min (%d) must be less than Max (%d)", params.Min, params.Max))
+	}
+	if params.Min > 999999 || params.Min < 0 || params.Max > 999999 {
+		return errors.New(fmt.Sprintf("Min (%d) and Max (%d) must be in range from 0 to 999999", params.Min, params.Max))
+	}
+	return nil
+}
+
+func Run(params Params) (result Result, err error) {
+	if err = Validate(params); err != nil {
+		return
+	}
+	return BestCountingSuccessTickets(params.Min, params.Max), nil
+}
+
+func Demo(params Params) {
+	fmt.Printf("Received range. Min:%d, Max:%d\r\n", params.Min, params.Max)
+	if result, err := Run(params); err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Printf("Best method is %d, found %d lucky tickets\r\n", result.Method, result.Count)
+	}
+}
+
 func firstMethod(d []int) bool {
 	return d[0]+d[1]+d[2] == d[3]+d[4]+d[5]
 }
@@ -44,10 +76,6 @@ func secondMethod(d []int) bool {
 }
 
 func BestCountingSuccessTickets(min, max int) (r Result) {
-
-	if min > 999999 || min < 0 || max > 999999 || min > max {
-		return
-	}
 
 	firstMethodCounter := 0
 	secondMethodCounter := 0
@@ -70,7 +98,6 @@ func BestCountingSuccessTickets(min, max int) (r Result) {
 		}
 	}
 
-	// todo: to do something when both counters are equal
 	if firstMethodCounter > secondMethodCounter {
 		return Result{
 			Method: 1,

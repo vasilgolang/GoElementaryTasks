@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 	"github.com/pkg/errors"
+	"fmt"
 )
 
 /*
@@ -15,6 +16,38 @@ import (
 Входные параметры : длина и значение минимального квадрата
 Выход : nil если сохранение удалось и err в противном случае
 */
+
+type Params struct {
+	Length int `json:"length"`
+	Square int `json:"square"`
+}
+
+// Returns error when params can't pass validation
+func Validate(params Params) (err error) {
+	if params.Length <= 0 {
+		return errors.New("Length must be more than 0")
+	}
+	if params.Square <= 0 {
+		return errors.New("Square must be more than 0")
+	}
+	return nil
+}
+
+func Run(params Params) (err error) {
+	if err = Validate(params); err != nil {
+		return
+	}
+	return WriteNumbers(params.Length, params.Square)
+}
+
+func Demo(params Params) {
+	fmt.Printf("Received Length:%d, Square:%d\r\n", params.Length, params.Square)
+	if err := Run(params); err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Println("Please see result in file numbers.txt")
+	}
+}
 
 func WriteNumbers(length int, square int) error {
 	if square < 0 {

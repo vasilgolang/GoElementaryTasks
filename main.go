@@ -19,14 +19,7 @@ import (
 )
 
 
-type Params6 struct {
-	Length int `json:"length"`
-	Square int `json:"square"`
-}
 
-type Params7 struct {
-	Context string `json:"context"` // context file name
-}
 
 type Params struct {
 	Params1 []task1.Params `json:"task1params" xml:"task1params"`
@@ -34,8 +27,8 @@ type Params struct {
 	Params3 []task3.Params `json:"task3params" xml:"task3params"`
 	Params4 []task4.Params `json:"task4params" xml:"task4params"`
 	Params5 []task5.Params `json:"task5params" xml:"task5params"`
-	Params6 []Params6 `json:"task6params" xml:"task6params"`
-	Params7 []Params7 `json:"task7params" xml:"task7params"`
+	Params6 []task6.Params `json:"task6params" xml:"task6params"`
+	Params7 []task7.Params `json:"task7params" xml:"task7params"`
 }
 
 func main() {
@@ -134,20 +127,22 @@ func main() {
 		//fmt.Println(task4.FindMaxPalindrome(p.Number))
 		task4.Demo(p)
 	}
-	return
 
 	for _, p := range params.Params5 {
 		fmt.Printf("\r\nTrying to execute task5 with params: %#v\r\n", p)
-		fmt.Println(task5.BestCountingSuccessTickets(p.Min, p.Max))
+		//fmt.Println(task5.BestCountingSuccessTickets(p.Min, p.Max))
+		task5.Demo(p)
 	}
+
 
 	for _, p := range params.Params6 {
 		fmt.Printf("\r\nTrying to execute task6 with params: %#v\r\n", p)
-		if err = task6.WriteNumbers(p.Length, p.Square); err != nil {
-			fmt.Println("Error:", err)
-			continue
-		}
-		fmt.Println("All is OK. Please see results in numbers.txt")
+		task6.Demo(p)
+		//if err = task6.WriteNumbers(p.Length, p.Square); err != nil {
+		//	fmt.Println("Error:", err)
+		//	continue
+		//}
+		//fmt.Println("All is OK. Please see results in numbers.txt")
 	}
 
 	for _, p := range params.Params7 {

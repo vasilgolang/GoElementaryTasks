@@ -3,9 +3,10 @@ package task7
 import (
 	"io/ioutil"
 	"strings"
-	"github.com/pkg/errors"
 	"strconv"
 	"fmt"
+	"os"
+	"errors"
 )
 
 /*
@@ -16,10 +17,36 @@ import (
 Выход : срез сгенерированных чисел
 */
 
-/* К сожалению, не понял формат входящих параметров. Имеется ввиду физический файл с именем
-"context" и в нем должно быть 2 числа min и max разделенных пробелами, либо одно число length?
-Поэтому пока что делаю функцию которая принимает эти 3 параметра.
- */
+type Params struct {
+	Context string `json:"context"` // context file name
+}
+
+// Returns error when params can't pass validation
+func Validate(params Params) (err error) {
+	if _, err := os.Stat(params.Context); os.IsNotExist(err) {
+		return errors.New("File" + params.Context + "doesn't exist")
+	}
+
+	return nil
+}
+
+func Demo(params Params) {
+	fmt.Printf("Received file name:%s\r\n", params.Context)
+	if numbers, err := Run(params); err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Println("Numbers:", numbers)
+	}
+}
+
+func Run(params Params) (numbers []int, err error) {
+	restriction, err := ParseContext(params.Context)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	return Fib(restriction), nil
+}
 
 type restriction struct {
 	min, max, length int
