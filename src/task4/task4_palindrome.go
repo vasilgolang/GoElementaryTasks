@@ -1,6 +1,42 @@
 package task4
 
-import "fmt"
+import (
+	"fmt"
+	"errors"
+)
+
+type Params struct {
+	Number int `json:"number"`
+}
+
+// Returns error when params can't pass validation
+func Validate(params Params) (err error) {
+	if params.Number < 0 {
+		return errors.New(fmt.Sprintf("Number (%d) must be positive", params.Number))
+	}
+	return nil
+}
+
+func Run(params Params) (palindrome int, success bool, err error) {
+	if err = Validate(params); err != nil {
+		return
+	}
+	palindrome, success = FindMaxPalindrome(params.Number)
+	return
+}
+
+func Demo(params Params) {
+	fmt.Printf("Received number:%#v\r\n", params.Number)
+	if palindrome, success, err := Run(params); err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		if !success {
+			fmt.Println("Palindrome wasn't found in nubmer", params.Number)
+		} else {
+			fmt.Println("Max palindrome:", palindrome)
+		}
+	}
+}
 
 func Palindrome(nums []int) (res bool) {
 	if len(nums) < 2 {
@@ -47,7 +83,6 @@ func FindMaxPalindrome(num int) (palindrome int, success bool) {
 	if num < 10 {
 		return
 	}
-	fmt.Println("debug:", num)
 	digits := intToSliceInt(num)
 
 	// Reverse slice

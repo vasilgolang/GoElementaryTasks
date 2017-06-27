@@ -18,9 +18,6 @@ import (
 	"encoding/json"
 )
 
-type Params4 struct {
-	Number int `json:"number"`
-}
 
 type Params6 struct {
 	Length int `json:"length"`
@@ -35,7 +32,7 @@ type Params struct {
 	Params1 []task1.Params `json:"task1params" xml:"task1params"`
 	Params2 []task2.Params `json:"task2params" xml:"task2params"`
 	Params3 []task3.Params `json:"task3params" xml:"task3params"`
-	Params4 []Params4 `json:"task4params" xml:"task4params"`
+	Params4 []task4.Params `json:"task4params" xml:"task4params"`
 	Params5 []task5.Params `json:"task5params" xml:"task5params"`
 	Params6 []Params6 `json:"task6params" xml:"task6params"`
 	Params7 []Params7 `json:"task7params" xml:"task7params"`
@@ -131,12 +128,13 @@ func main() {
 		//}
 		task3.Demo(p)
 	}
-	return
 
 	for _, p := range params.Params4 {
 		fmt.Printf("\r\nTrying to execute task4 with params: %#v\r\n", p)
-		fmt.Println(task4.FindMaxPalindrome(p.Number))
+		//fmt.Println(task4.FindMaxPalindrome(p.Number))
+		task4.Demo(p)
 	}
+	return
 
 	for _, p := range params.Params5 {
 		fmt.Printf("\r\nTrying to execute task5 with params: %#v\r\n", p)
