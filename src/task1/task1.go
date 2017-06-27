@@ -23,12 +23,14 @@ type Params struct {
 	Symbol string  `json:"symbol" xml:"symbol"` // chess board symbol for white fields
 }
 
-func Demo(params Params) {
-	fmt.Printf("Received params:\r\nWidth: %d\r\nHeight: %d\r\nSymbol: %s\r\n", params.Width, params.Height, params.Symbol)
-	if result, err := Run(params); err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Println("Result:\r\n", result)
+func Demo(params []Params) {
+	for _, param := range params {
+		fmt.Printf("Received params:\r\nWidth: %d\r\nHeight: %d\r\nSymbol: %s\r\n", param.Width, param.Height, param.Symbol)
+		if result, err := Run(param); err != nil {
+			fmt.Println("Error:", err)
+		} else {
+			fmt.Println("Result:\r\n", result)
+		}
 	}
 }
 

@@ -29,15 +29,17 @@ func Validate(params Params) (err error) {
 	return
 }
 
-func Demo(params Params) {
-	fmt.Printf("Received params:\r\nEnvelope1: %#v\r\nEnvelope2: %#v\r\n", params.Envelope1, params.Envelope2)
-	if CanEnclose, minEnvelope, err := Run(params); err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		if CanEnclose {
-			fmt.Println("Envelopes can be enclosed. The smallest envelope is", minEnvelope)
+func Demo(params []Params) {
+	for _, param := range params {
+		fmt.Printf("Received params:\r\nEnvelope1: %#v\r\nEnvelope2: %#v\r\n", param.Envelope1, param.Envelope2)
+		if CanEnclose, minEnvelope, err := Run(param); err != nil {
+			fmt.Println("Error:", err)
 		} else {
-			fmt.Println("Envelopes can't be enclosed.")
+			if CanEnclose {
+				fmt.Println("Envelopes can be enclosed. The smallest envelope is", minEnvelope)
+			} else {
+				fmt.Println("Envelopes can't be enclosed.")
+			}
 		}
 	}
 }

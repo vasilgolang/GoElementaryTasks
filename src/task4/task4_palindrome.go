@@ -25,15 +25,17 @@ func Run(params Params) (palindrome int, success bool, err error) {
 	return
 }
 
-func Demo(params Params) {
-	fmt.Printf("Received number:%#v\r\n", params.Number)
-	if palindrome, success, err := Run(params); err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		if !success {
-			fmt.Println("Palindrome wasn't found in nubmer", params.Number)
+func Demo(params []Params) {
+	for _, param := range params {
+		fmt.Printf("Received number:%#v\r\n", param.Number)
+		if palindrome, success, err := Run(param); err != nil {
+			fmt.Println("Error:", err)
 		} else {
-			fmt.Println("Max palindrome:", palindrome)
+			if !success {
+				fmt.Println("Palindrome wasn't found in nubmer", param.Number)
+			} else {
+				fmt.Println("Max palindrome:", palindrome)
+			}
 		}
 	}
 }

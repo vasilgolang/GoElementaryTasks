@@ -40,12 +40,14 @@ func Run(params Params) (err error) {
 	return WriteNumbers(params.Length, params.Square)
 }
 
-func Demo(params Params) {
-	fmt.Printf("Received Length:%d, Square:%d\r\n", params.Length, params.Square)
-	if err := Run(params); err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Println("Please see result in file numbers.txt")
+func Demo(params []Params) {
+	for _, param := range params {
+		fmt.Printf("Received Length:%d, Square:%d\r\n", param.Length, param.Square)
+		if err := Run(param); err != nil {
+			fmt.Println("Error:", err)
+		} else {
+			fmt.Println("Please see result in file numbers.txt")
+		}
 	}
 }
 

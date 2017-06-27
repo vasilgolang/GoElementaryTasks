@@ -30,12 +30,14 @@ func Validate(params Params) (err error) {
 	return nil
 }
 
-func Demo(params Params) {
-	fmt.Printf("Received file name:%s\r\n", params.Context)
-	if numbers, err := Run(params); err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Println("Numbers:", numbers)
+func Demo(params []Params) {
+	for _, param := range params {
+		fmt.Printf("Received file name:%s\r\n", param.Context)
+		if numbers, err := Run(param); err != nil {
+			fmt.Println("Error:", err)
+		} else {
+			fmt.Println("Numbers:", numbers)
+		}
 	}
 }
 

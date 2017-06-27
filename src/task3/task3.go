@@ -28,12 +28,14 @@ type Params struct {
 	Triangles []Triangle `json:"triangles"`
 }
 
-func Demo(params Params) {
-	fmt.Printf("Received triangles:%#v\r\n", params)
-	if result, err := Run(params); err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Println("Result:\r\n", result)
+func Demo(params []Params) {
+	for _, param := range params {
+		fmt.Printf("Received triangles:%#v\r\n", param)
+		if result, err := Run(param); err != nil {
+			fmt.Println("Error:", err)
+		} else {
+			fmt.Println("Result:\r\n", result)
+		}
 	}
 }
 

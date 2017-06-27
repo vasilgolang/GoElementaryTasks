@@ -49,12 +49,14 @@ func Run(params Params) (result Result, err error) {
 	return BestCountingSuccessTickets(params.Min, params.Max), nil
 }
 
-func Demo(params Params) {
-	fmt.Printf("Received range. Min:%d, Max:%d\r\n", params.Min, params.Max)
-	if result, err := Run(params); err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Printf("Best method is %d, found %d lucky tickets\r\n", result.Method, result.Count)
+func Demo(params []Params) {
+	for _, param := range params {
+		fmt.Printf("Received range. Min:%d, Max:%d\r\n", param.Min, param.Max)
+		if result, err := Run(param); err != nil {
+			fmt.Println("Error:", err)
+		} else {
+			fmt.Printf("Best method is %d, found %d lucky tickets\r\n", result.Method, result.Count)
+		}
 	}
 }
 
