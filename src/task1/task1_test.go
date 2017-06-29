@@ -6,52 +6,35 @@ import (
 )
 
 var tests = []struct {
-	input     Params
-	waitError bool
-	board     string
+	input        Params
+	passValidate bool
+	board        string
 }{
 	{
-		input:     Params{Width: 3, Height: 3, Symbol: "*"},
-		waitError: true,
-		board:     "* *\r\n * \r\n* *\r\n",
+		input:        Params{Width: 3, Height: 3, Symbol: "*"},
+		passValidate: true,
+		board:        "* *\r\n * \r\n* *\r\n",
 	},
 	{
-		input:     Params{Width: -1, Height: 10, Symbol: "*"},
-		waitError: false,
+		input:        Params{Width: 3, Height: 3, Symbol: "ab"},
+		passValidate: true,
+		board:        "a a\r\n a \r\na a\r\n",
 	},
 	{
-		input:     Params{Width: 5, Height: -10, Symbol: "*"},
-		waitError: false,
+		input:        Params{Width: -1, Height: 10, Symbol: "*"},
+		passValidate: false,
 	},
 	{
-		input:     Params{Width: 10, Height: 10, Symbol: "ab"},
-		waitError: false,
+		input:        Params{Width: 5, Height: -10, Symbol: "*"},
+		passValidate: false,
 	},
-}
-
-func TestValidate(t *testing.T) {
-	for _, test := range tests {
-		if err := Validate(test.input); (err == nil) != test.waitError {
-			t.Errorf("%v != %v", err, test.waitError)
-		}
-	}
-}
-
-func TestRun(t *testing.T) {
-	for _, test := range tests {
-		if board, err := Run(test.input); (err == nil) != test.waitError || board != test.board {
-			t.Errorf("Wait: %v = %v\r\nWait board:\r\n%sGet board:\r\n%s", err, test.waitError, test.board, board)
-		}
-	}
 }
 
 func TestChessBoard(t *testing.T) {
 	for _, test := range tests {
-		if err := Validate(test.input); err == nil {
-			r, _ := utf8.DecodeRuneInString(test.input.Symbol) // r contains the first rune of the string
-			if board := chessBoard(test.input.Width, test.input.Height, r); board != test.board {
-				t.Errorf("Wait board:\r\n%sGet board:\r\n%s", test.board, board)
-			}
+		symbol, _ := utf8.DecodeRuneInString(test.input.Symbol) // r contains the first rune of the string
+		if board, err := ChessBoard(test.input.Width, test.input.Height, symbol); (err == nil) && board != test.board {
+			t.Errorf("Wait board:\r\n%s\r\nGet board:\r\n%s", test.board, board)
 		}
 	}
 }

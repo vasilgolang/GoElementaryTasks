@@ -26,7 +26,8 @@ type Params struct {
 func Demo(params []Params) {
 	for _, param := range params {
 		fmt.Printf("Received params:\r\nWidth: %d\r\nHeight: %d\r\nSymbol: %s\r\n", param.Width, param.Height, param.Symbol)
-		if result, err := Run(param); err != nil {
+		symbol, _ := utf8.DecodeRuneInString(param.Symbol) // r contains the first rune of the string
+		if result, err := ChessBoard(param.Width, param.Height, symbol); err != nil {
 			fmt.Println("Error:", err)
 		} else {
 			fmt.Println("Result:\r\n", result)
@@ -35,31 +36,19 @@ func Demo(params []Params) {
 }
 
 // Returns error when params can't pass validation
-func Validate(params Params) (err error) {
+func validate(width, height int) (err error) {
 	// Check if width and height are positive numbers
-	if params.Width < 0 || params.Height < 0 {
+	if width < 0 || height < 0 {
 		return errors.New("Width and height must be more than 0")
 	}
-	// Check if symbol is rune
-	if utf8.RuneCountInString(params.Symbol) != 1 {
-		return errors.New("Symbol must be string with length equal 1")
-	}
-	// if all retrieved parameters are ok
 	return nil
 }
 
-// Returns plain text chess board as a result and error when validation wasn't passed
-func Run(params Params) (result string, err error) {
-	if err := Validate(params); err != nil {
+// Returns text plain chess board
+func ChessBoard(width, height int, symbol rune) (board string, err error) {
+	if err := validate(width, height); err != nil {
 		return "", err
 	}
-	r, _ := utf8.DecodeRuneInString(params.Symbol) // r contains the first rune of the string
-	return chessBoard(params.Width, params.Height, r), nil
-}
-
-// Returns text plain chess board
-// Not exported function, because it mustn't run without validation
-func chessBoard(width, height int, symbol rune) (board string) {
 	for i := 0; i < height; i++ {
 		for j := 0; j < width; j++ {
 			// Detection "white" or "black" field of chess board
