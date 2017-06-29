@@ -18,11 +18,11 @@ func Validate(params Params) (err error) {
 }
 
 func Run(params Params) (palindrome int, success bool, err error) {
-	if err = Validate(params); err != nil {
-		return
+	if err := Validate(params); err != nil {
+		return 0, false, err
 	}
 	palindrome, success = FindMaxPalindrome(params.Number)
-	return
+	return palindrome, success, nil
 }
 
 func Demo(params []Params) {
@@ -82,9 +82,11 @@ func sliceInt2Int(nums []int) (num int) {
 }
 
 func FindMaxPalindrome(num int) (palindrome int, success bool) {
+
 	if num < 10 {
 		return
 	}
+
 	digits := intToSliceInt(num)
 
 	// Reverse slice
