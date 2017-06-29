@@ -51,7 +51,7 @@ func ChessBoard(width, height int, symbol rune) (board string, err error) {
 	}
 	for i := 0; i < height; i++ {
 		for j := 0; j < width; j++ {
-			// Detection "white" or "black" field of chess board
+			// Detection "white" or "black" field of the chess board
 			if (i+j)%2 == 0 {
 				board += string(symbol)
 			} else {
