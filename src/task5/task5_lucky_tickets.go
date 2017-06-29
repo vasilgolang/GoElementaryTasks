@@ -60,46 +60,37 @@ func Demo(params []Params) {
 	}
 }
 
-func firstMethod(d []int) bool {
+func firstMethod(d [6]uint8) bool {
 	return d[0]+d[1]+d[2] == d[3]+d[4]+d[5]
 }
 
-func secondMethod(d []int) bool {
+func secondMethod(d [6]uint8) bool {
 	//return d[0]+d[2]+d[4] == d[1]+d[3]+d[5] // wrong understood task
 	sumOdd, sumEven := 0, 0
 	for _, v := range d {
 		if (v % 2) == 0 {
-			sumEven += v
+			sumEven += int(v)
 		} else {
-			sumOdd += v
+			sumOdd += int(v)
 		}
 	}
 	return sumOdd == sumEven
 }
 
 func BestCountingSuccessTickets(min, max int) (r Result) {
-
 	firstMethodCounter := 0
 	secondMethodCounter := 0
 	for i := min; i <= max; i++ {
-		digits := intToSliceInt(i)
+		ticket := num2Ticket(i)
 
-		// Reverse slice
-		for i, j := 0, len(digits)-1; i < j; i, j = i+1, j-1 {
-			digits[i], digits[j] = digits[j], digits[i]
-		}
-
-		digits = addBeginZeros(digits)
-
-		if firstMethod(digits) {
+		if firstMethod(ticket) {
 			firstMethodCounter++
 		}
 
-		if secondMethod(digits) {
+		if secondMethod(ticket) {
 			secondMethodCounter++
 		}
 	}
-
 	if firstMethodCounter > secondMethodCounter {
 		return Result{
 			Method: 1,
@@ -114,25 +105,11 @@ func BestCountingSuccessTickets(min, max int) (r Result) {
 
 }
 
-func intToSliceInt(num int) (nums []int) {
-	for {
-		nums = append(nums, num%10)
+func num2Ticket(num int) (ticket [6]uint8) {
+	for i := 5; i >= 0; i-- {
+		ticket[i] = uint8(num % 10)
 		num /= 10
-		if num < 10 {
-			nums = append(nums, num)
-			break
-		}
 	}
-
 	return
 }
 
-func addBeginZeros(nums []int) []int {
-	if len(nums) < 6 {
-		newSlice := make([]int, 6-len(nums), 6)
-		newSlice = append(newSlice, nums...)
-
-		return newSlice
-	}
-	return nums
-}
